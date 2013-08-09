@@ -15,12 +15,10 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.DependencyCollectionException;
-import org.eclipse.aether.connector.wagon.WagonProvider;
-import org.eclipse.aether.connector.wagon.WagonRepositoryConnectorFactory;
+import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.DefaultServiceLocator;
-import org.eclipse.aether.internal.connector.wagon.PlexusWagonProvider;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactResult;
@@ -28,6 +26,9 @@ import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
+import org.eclipse.aether.spi.connector.transport.TransporterFactory;
+import org.eclipse.aether.transport.file.FileTransporterFactory;
+import org.eclipse.aether.transport.http.HttpTransporterFactory;
 
 /**
  * @author shenyue
@@ -49,8 +50,10 @@ public class MavenClasspathGenerator {
 
 	public void init() {
 		DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
-		locator.setServices(WagonProvider.class, new PlexusWagonProvider());
-		locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
+		locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
+		locator.addService(TransporterFactory.class, FileTransporterFactory.class);
+		locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
+
 		system = locator.getService(RepositorySystem.class);
 		central = new RemoteRepository.Builder("central", "default", remoteRepoUrl).build();
 		localRepo = new LocalRepository(localRepoPath);
