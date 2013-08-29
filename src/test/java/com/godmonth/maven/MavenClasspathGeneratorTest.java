@@ -12,7 +12,6 @@ public class MavenClasspathGeneratorTest {
 	public void test() throws DependencyCollectionException, DependencyResolutionException {
 		MavenClasspathGenerator mcg = new MavenClasspathGenerator();
 		mcg.setLocalRepoPath("target/local-repo");
-		mcg.setRemoteRepoUrl("http://nexus.weihui.com:8081/content/groups/public");
 		mcg.init();
 		System.out.println(mcg.getJarFileList("org.apache.commons:commons-lang3:3.1"));
 		System.out.println(mcg.getJarFileList("com.fasterxml.jackson.core:jackson-databind:2.2.1"));
